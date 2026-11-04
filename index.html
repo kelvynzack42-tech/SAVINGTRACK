@@ -99,7 +99,7 @@ input,select{background:rgba(2,17,11,.62);border-color:rgba(207,255,228,.22);col
 
 .coach-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-bottom:16px}.coach-metric{background:linear-gradient(135deg,#f1fbf5,#fff);border:1px solid var(--line);border-radius:15px;padding:17px}.coach-metric strong{display:block;font-size:24px;letter-spacing:-.5px;margin:8px 0 3px}.coach-metric span{color:var(--muted);font-size:12px}.coach-list{display:grid;gap:10px}.coach-item{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.coach-item b{display:block}.coach-item small{display:block;color:var(--muted);margin-top:4px}.coach-note{background:#fff8e8;border:1px solid #f1dfb5;color:#76541c;border-radius:12px;padding:12px;font-size:12px;line-height:1.5;margin-top:12px}@media(max-width:760px){.coach-grid{grid-template-columns:1fr}}
 
-</style>
+.money-line{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:12px}.money-line:last-child{border:0}.money-line small{display:block;color:var(--muted);margin-top:3px}.money-positive{color:#72e8a9;font-weight:800}.money-negative{color:#ff9ba4;font-weight:800}</style>
 </head>
 <body>
 
@@ -142,7 +142,7 @@ input,select{background:rgba(2,17,11,.62);border-color:rgba(207,255,228,.22);col
   <div class="stat"><div class="stat-top"><span>Saved this month</span><span class="stat-icon">▦</span></div><div class="stat-value" id="monthSaved">GH₵0.00</div><div class="stat-foot">Deposits minus withdrawals</div></div>
  </section>
  <nav class="nav" aria-label="Main navigation">
-  <button class="active" data-view="dashboard">Dashboard</button><button data-view="coach">Savings Coach</button><button data-view="reports">Reports</button><button data-view="planner">Planner</button><button data-view="settings">Settings</button>
+  <button class="active" data-view="dashboard">Dashboard</button><button data-view="coach">Savings Coach</button><button data-view="money">Money Manager</button><button data-view="reports">Reports</button><button data-view="planner">Planner</button><button data-view="settings">Settings</button>
  </nav>
  <section class="view active" id="view-dashboard">
   <div class="columns">
@@ -201,6 +201,27 @@ input,select{background:rgba(2,17,11,.62);border-color:rgba(207,255,228,.22);col
    <div class="panel"><h3>Recurring savings plans</h3><p class="sub">Your planned contributions and next expected save dates.</p><div id="plannerList" class="reminder-list"></div></div>
   </div>
  </section>
+ <section class="view" id="view-money">
+  <div class="stats" style="margin-bottom:16px">
+   <div class="stat"><div class="stat-top">This month expenses</div><div class="stat-value" id="expenseTotal">GH₵0.00</div><div class="stat-foot">Recorded spending</div></div>
+   <div class="stat"><div class="stat-top">Monthly budget left</div><div class="stat-value" id="budgetLeft">Not set</div><div class="stat-foot" id="budgetCaption">Set a monthly spending limit</div></div>
+   <div class="stat"><div class="stat-top">Outstanding debt</div><div class="stat-value" id="debtTotal">GH₵0.00</div><div class="stat-foot">Unpaid balances you owe</div></div>
+   <div class="stat"><div class="stat-top">Net monthly cash flow</div><div class="stat-value" id="cashFlow">GH₵0.00</div><div class="stat-foot">Income minus expenses entered here</div></div>
+  </div>
+  <div class="columns">
+   <section class="panel"><h3>Monthly budget</h3><p class="sub">Set a spending limit and see how much remains this month.</p>
+    <form id="budgetForm"><label for="monthlyBudget">Monthly budget (GHS)</label><input id="monthlyBudget" type="number" min="0" step=".01" placeholder="e.g. 1500" required><button class="primary" type="submit">Save budget</button></form>
+    <div class="pace" id="budgetAdvice" style="margin-top:12px">Your budget insight will appear here.</div><hr style="border-color:var(--line);margin:18px 0">
+    <h3>Record expense or income</h3><p class="sub">Track everyday money movements separately from goal savings.</p>
+    <form id="moneyForm"><label for="moneyType">Entry type</label><select id="moneyType"><option value="expense">Expense</option><option value="income">Income</option></select><label for="moneyAmount">Amount (GHS)</label><input id="moneyAmount" type="number" min=".01" step=".01" required placeholder="0.00"><label for="moneyCategory">Category</label><select id="moneyCategory"><option>Food</option><option>Transport</option><option>Bills</option><option>Shopping</option><option>Health</option><option>Education</option><option>Business</option><option>Housing</option><option>Other</option></select><label for="moneyDate">Date</label><input id="moneyDate" type="date" required><label for="moneyNote">Description</label><input id="moneyNote" maxlength="100" placeholder="What was this for?"><button class="primary" type="submit">Add entry</button></form>
+   </section>
+   <section class="panel"><h3>Debt tracker</h3><p class="sub">Keep track of money owed to you or money you owe.</p>
+    <form id="debtForm"><label for="debtDirection">Debt type</label><select id="debtDirection"><option value="owe">I owe someone</option><option value="owed">Someone owes me</option></select><label for="debtName">Person or organisation</label><input id="debtName" maxlength="70" required placeholder="Name"><label for="debtAmount">Amount (GHS)</label><input id="debtAmount" type="number" min=".01" step=".01" required><label for="debtDue">Due date (optional)</label><input id="debtDue" type="date"><button class="primary" type="submit">Add debt</button></form>
+    <div class="history" style="margin-top:16px"><b>Active debts</b><div id="debtList"></div></div>
+   </section>
+  </div>
+  <section class="panel" style="margin-top:16px"><div class="section-head"><h3>Recent money activity</h3><span class="muted">Income and expenses</span></div><div id="moneyEntries"></div></section>
+ </section>
  <section class="view" id="view-settings">
   <div class="settings-grid">
    <div class="panel"><h3>Security lock</h3><p class="sub">Set a PIN or password required when opening SaveTrack.</p><div id="securityStatus" class="small-note">No lock configured.</div>
@@ -225,13 +246,13 @@ const monthKey=d=>String(d||'').slice(0,7);
 const fmtDate=d=>d?new Date(d+'T00:00:00').toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}):'No deadline';
 const money=(n,c='GHS')=>`${symbols[c]||c+' '}${Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let data={version:2,goals:[],settings:{reminderFrequency:'off',reminderTime:'18:00',reminderDay:'1',pinHash:null,challengeTarget:0,emergencyExpenses:0,emergencyMonths:3,emergencySaved:0,emergencyContribution:0},lastReminder:''};
-try{const raw=JSON.parse(storage.getItem(KEY)||'null');if(raw&&Array.isArray(raw.goals)){data={...data,...raw,settings:{...data.settings,...(raw.settings||{})}};data.goals=data.goals.map(g=>({...g,initial:Number(g.initial||0),transactions:Array.isArray(g.transactions)?g.transactions:(g.deposits||[]).map(d=>({...d,type:'deposit'})),frequency:g.frequency||'none',recurringAmount:Number(g.recurringAmount||0)}));}}catch(e){}
+let data={version:3,goals:[],moneyEntries:[],debts:[],monthlyBudget:0,settings:{reminderFrequency:'off',reminderTime:'18:00',reminderDay:'1',pinHash:null,challengeTarget:0,emergencyExpenses:0,emergencyMonths:3,emergencySaved:0,emergencyContribution:0},lastReminder:''};
+try{const raw=JSON.parse(storage.getItem(KEY)||'null');if(raw&&Array.isArray(raw.goals)){data={...data,...raw,moneyEntries:Array.isArray(raw.moneyEntries)?raw.moneyEntries:[],debts:Array.isArray(raw.debts)?raw.debts:[],monthlyBudget:Number(raw.monthlyBudget||0),settings:{...data.settings,...(raw.settings||{})}};data.goals=data.goals.map(g=>({...g,initial:Number(g.initial||0),transactions:Array.isArray(g.transactions)?g.transactions:(g.deposits||[]).map(d=>({...d,type:'deposit'})),frequency:g.frequency||'none',recurringAmount:Number(g.recurringAmount||0)}));}}catch(e){}
 const txs=g=>g.transactions||[];
 const saved=g=>Number(g.initial||0)+txs(g).reduce((s,t)=>s+(t.type==='deposit'?Number(t.amount): -Number(t.amount)),0);
 const remaining=g=>Math.max(0,Number(g.target)-saved(g));
 const allTx=()=>data.goals.flatMap(g=>txs(g).map(t=>({...t,goalName:g.name,currency:g.currency,goalId:g.id}))).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-function persist(){storage.setItem(KEY,JSON.stringify(data));render();checkReminder();}
+function persist(){storage.setItem(KEY,JSON.stringify(data));render();renderMoney();checkReminder();}
 function pace(g){const left=remaining(g);if(left<=0)return'Target reached — excellent work!';if(!g.deadline)return'Add a target date to calculate a daily, weekly and monthly savings pace.';const now=new Date(today()+'T00:00:00'),end=new Date(g.deadline+'T00:00:00'),days=Math.max(0,Math.ceil((end-now)/86400000));if(days===0)return`Save ${money(left,g.currency)} today to reach your target.`;return`Suggested pace: ${money(left/days,g.currency)}/day · ${money(left/Math.max(1,days/7),g.currency)}/week · ${money(left/Math.max(1,days/30.4375),g.currency)}/month · ${days} days left.`}
 function render(){
  const goals=data.goals, totalGhs=goals.filter(g=>g.currency==='GHS').reduce((s,g)=>s+saved(g),0),remGhs=goals.filter(g=>g.currency==='GHS').reduce((s,g)=>s+remaining(g),0);
@@ -341,8 +362,8 @@ function savePdfBackup(){const goals=data.goals,tx=allTx();const esc=v=>String(v
 $('pdfBackupBtn').onclick=$('pdfBackupSettingsBtn').onclick=savePdfBackup;$('goalSearch').addEventListener('input',render);
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 $('exportCsvBtn').onclick=()=>{const rows=[['Date','Goal','Currency','Type','Amount','Note'],...allTx().map(t=>[t.date,t.goalName,t.currency,t.type,t.amount,t.note||''])];const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');downloadBlob(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),`savetrack-transactions-${today()}.csv`)};
-$('importBtn').onclick=()=>$('importFile').click();$('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const parsed=JSON.parse(await f.text());const imported=Array.isArray(parsed)?parsed:parsed.goals;if(!Array.isArray(imported))throw Error('Backup does not contain a goals list.');if(!confirm(`Import ${imported.length} goals? This replaces the current local data.`))return;data={version:2,goals:imported.map(g=>({...g,id:String(g.id||Math.random()),transactions:Array.isArray(g.transactions)?g.transactions:(g.deposits||[]).map(d=>({...d,type:'deposit'})),frequency:g.frequency||'none',recurringAmount:Number(g.recurringAmount||0)})),settings:{...data.settings,...(parsed.settings||{})},lastReminder:parsed.lastReminder||''};persist();alert('Backup imported.');}catch(err){alert('Could not import backup: '+err.message)}finally{e.target.value=''}});
-$('clearAllBtn').onclick=()=>{if(confirm('Delete ALL goals, transactions and settings from this browser? This cannot be undone.')){data={version:2,goals:[],settings:{reminderFrequency:'off',reminderTime:'18:00',reminderDay:'1',pinHash:null},lastReminder:''};persist();}};
+$('importBtn').onclick=()=>$('importFile').click();$('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const parsed=JSON.parse(await f.text());const imported=Array.isArray(parsed)?parsed:parsed.goals;if(!Array.isArray(imported))throw Error('Backup does not contain a goals list.');if(!confirm(`Import ${imported.length} goals? This replaces the current local data.`))return;data={version:3,moneyEntries:Array.isArray(parsed.moneyEntries)?parsed.moneyEntries:[],debts:Array.isArray(parsed.debts)?parsed.debts:[],monthlyBudget:Number(parsed.monthlyBudget||0),goals:imported.map(g=>({...g,id:String(g.id||Math.random()),transactions:Array.isArray(g.transactions)?g.transactions:(g.deposits||[]).map(d=>({...d,type:'deposit'})),frequency:g.frequency||'none',recurringAmount:Number(g.recurringAmount||0)})),settings:{...data.settings,...(parsed.settings||{})},lastReminder:parsed.lastReminder||''};persist();alert('Backup imported.');}catch(err){alert('Could not import backup: '+err.message)}finally{e.target.value=''}});
+$('clearAllBtn').onclick=()=>{if(confirm('Delete ALL goals, transactions and settings from this browser? This cannot be undone.')){data={version:3,goals:[],moneyEntries:[],debts:[],monthlyBudget:0,settings:{reminderFrequency:'off',reminderTime:'18:00',reminderDay:'1',pinHash:null},lastReminder:''};persist();}};
 async function hashCode(s){const bytes=new TextEncoder().encode(s);if(window.crypto&&crypto.subtle){const buf=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')}let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return 'fallback-'+(h>>>0).toString(16)}
 $('pinForm').addEventListener('submit',async e=>{e.preventDefault();const p=$('newPin').value,q=$('confirmPin').value;if(p.length<4)return alert('Use at least 4 characters.');if(p!==q)return alert('The PIN/password entries do not match.');data.settings.pinHash=await hashCode(p);persist();$('newPin').value='';$('confirmPin').value='';alert('Local lock set. Keep your PIN/password safe; there is no recovery flow.')});
 $('removePinBtn').onclick=async()=>{if(!data.settings.pinHash)return alert('No lock is currently set.');const current=prompt('Enter your current PIN/password to remove the lock:');if(current===null)return;if(await hashCode(current)!==data.settings.pinHash)return alert('Incorrect PIN/password.');data.settings.pinHash=null;persist();alert('Lock removed.')};
@@ -357,7 +378,27 @@ if(enterStoreBtn&&welcomeGate){
   window.setTimeout(()=>{welcomeGate.remove();showLock();},820);
  });
 }
-render();showLock();checkReminder();setInterval(checkReminder,30000);
+
+function renderMoney(){
+ const entries=Array.isArray(data.moneyEntries)?data.moneyEntries:[],debts=Array.isArray(data.debts)?data.debts:[];
+ const mk=monthKey(today()),month=entries.filter(x=>monthKey(x.date)===mk),expenses=month.filter(x=>x.type==='expense').reduce((s,x)=>s+Number(x.amount||0),0),income=month.filter(x=>x.type==='income').reduce((s,x)=>s+Number(x.amount||0),0),budget=Number(data.monthlyBudget||0),left=budget-expenses;
+ if($('expenseTotal'))$('expenseTotal').textContent=money(expenses,'GHS');
+ if($('budgetLeft'))$('budgetLeft').textContent=budget>0?money(left,'GHS'):'Not set';
+ if($('budgetCaption'))$('budgetCaption').textContent=budget>0?`${Math.max(0,Math.round(expenses/budget*100))}% of monthly limit used`:'Set a monthly spending limit';
+ if($('debtTotal'))$('debtTotal').textContent=money(debts.filter(d=>d.direction==='owe').reduce((s,d)=>s+Number(d.amount||0),0),'GHS');
+ if($('cashFlow'))$('cashFlow').textContent=money(income-expenses,'GHS');
+ if($('monthlyBudget'))$('monthlyBudget').value=budget||'';
+ if($('moneyDate')&&!$('moneyDate').value)$('moneyDate').value=today();
+ if($('budgetAdvice'))$('budgetAdvice').textContent=budget<=0?'Set a budget to receive spending insights.':left<0?`You are ${money(Math.abs(left),'GHS')} over budget. Review non-essential spending.`:`You have ${money(left,'GHS')} remaining from this month’s budget.`;
+ if($('moneyEntries'))$('moneyEntries').innerHTML=entries.length?entries.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,30).map(x=>`<div class="money-line"><div><b>${safe(x.category||x.type)}</b><small>${safe(x.date)} · ${safe(x.note||'No description')}</small></div><div class="${x.type==='income'?'money-positive':'money-negative'}">${x.type==='income'?'+':'−'}${money(x.amount,'GHS')} <button class="danger" data-delete-entry="${safe(x.id)}" type="button">Delete</button></div></div>`).join(''):'<div class="empty">No income or expenses recorded yet.</div>';
+ if($('debtList'))$('debtList').innerHTML=debts.length?debts.map(d=>`<div class="money-line"><div><b>${safe(d.name)}</b><small>${d.direction==='owe'?'You owe':'Owed to you'} · ${safe(d.due||'No due date')}</small></div><div><b>${money(d.amount,'GHS')}</b> <button class="danger" type="button" data-delete-debt="${safe(d.id)}">Paid / remove</button></div></div>`).join(''):'<div class="empty">No active debts recorded.</div>';
+}
+$('budgetForm').addEventListener('submit',e=>{e.preventDefault();const n=Number($('monthlyBudget').value);if(!Number.isFinite(n)||n<=0)return alert('Enter a budget greater than zero.');data.monthlyBudget=n;persist();alert('Monthly budget saved.');});
+$('moneyForm').addEventListener('submit',e=>{e.preventDefault();const amount=Number($('moneyAmount').value);if(!Number.isFinite(amount)||amount<=0)return alert('Enter a valid amount.');data.moneyEntries=data.moneyEntries||[];data.moneyEntries.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:$('moneyType').value,amount,category:$('moneyCategory').value,date:$('moneyDate').value||today(),note:$('moneyNote').value.trim()});e.target.reset();$('moneyDate').value=today();persist();});
+$('debtForm').addEventListener('submit',e=>{e.preventDefault();const amount=Number($('debtAmount').value),name=$('debtName').value.trim();if(!name||!Number.isFinite(amount)||amount<=0)return alert('Enter a name and valid amount.');data.debts=data.debts||[];data.debts.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),direction:$('debtDirection').value,name,amount,due:$('debtDue').value||''});e.target.reset();persist();});
+document.addEventListener('click',e=>{const entry=e.target.closest('[data-delete-entry]'),debt=e.target.closest('[data-delete-debt]');if(entry){data.moneyEntries=(data.moneyEntries||[]).filter(x=>x.id!==entry.dataset.deleteEntry);persist()}if(debt){data.debts=(data.debts||[]).filter(x=>x.id!==debt.dataset.deleteDebt);persist()}});
+
+render();renderMoney();showLock();checkReminder();setInterval(checkReminder,30000);
 })();
 </script>
 <script>
